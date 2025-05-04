@@ -29,7 +29,7 @@ class Api:
         friends_data: list | None = self.session.method('friends.get', {
             'user_id': user_id,
             'order': 'name',
-            'fields': 'bdate,sex,city,universities'
+            'fields': 'bdate,city,sex,universities'
         }).get('items', None)
         if friends_data is None:
             raise ValueError('Не удалось получить список друзей')
@@ -42,8 +42,8 @@ class Api:
 
         return friends
     
-    def create_graph_by_attribute(self, friends: list[Friend], attribute: str):
-        if attribute not in ['bdate', 'sex', 'city', 'universities']:
+    def create_graph_by_attr(self, friends: list[Friend], attribute: str):
+        if attribute not in ['byear', 'city', 'sex', 'universities']:
             return ValueError(f'Неверный признак: {attribute}')
         
         # создаем узлы графа
@@ -69,10 +69,10 @@ class Api:
         return graph
 
 
-
-
 if __name__ == '__main__':
     load_dotenv()
     token = os.environ.get('ACCESS-TOKEN')
     api = Api(token=token)
     friends = api.get_friends()
+    for f in friends:
+        print(f.get_data())
