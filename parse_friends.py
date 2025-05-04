@@ -32,7 +32,7 @@ class Api:
             'fields': 'bdate,sex,city,universities'
         }).get('items', None)
         if friends_data is None:
-            raise ValueError
+            raise ValueError('Не удалось получить список друзей')
         
         friends = []
         for friend_data in friends_data:
@@ -41,6 +41,34 @@ class Api:
                 friends.append(friend)
 
         return friends
+    
+    def create_graph_by_attribute(self, friends: list[Friend], attribute: str):
+        if attribute not in ['bdate', 'sex', 'city', 'universities']:
+            return ValueError(f'Неверный признак: {attribute}')
+        
+        # создаем узлы графа
+        graph = nx.Graph()
+        for f in friends:
+            f_data = f.get_data()
+
+            f_name = f.name
+            f_attr = f_data.get(attribute)
+            if f_attr is None:
+                continue
+            graph.add_node(f_name, attr=f_attr)
+        
+        # создаем ребра графа
+        nodes = graph.nodes(data='attr')
+        for i, (name, attr) in enumerate(nodes):
+            for j, (other_name, other_attr) in enumerate(nodes):
+                if i == j:
+                    continue
+                if attr == other_attr:
+                    graph.add_edge(name, other_name)
+        
+        return graph
+
+
 
 
 if __name__ == '__main__':
