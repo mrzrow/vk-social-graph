@@ -3,17 +3,22 @@ import plotly.graph_objects as go
 
 from .friend import Friend
 
+
+# Класс для создания графа
 class Graph:
+    # Вспомогательный метод для проверки, что аттрибуты связаны между собой
     def _is_attr_connected(self, attr1: str | int | list, attr2: str | int | list) -> bool:
         if not (isinstance(attr1, list) and isinstance(attr2, list)):
             return attr1 == attr2
         return bool(set(attr1) & set(attr2))
 
+    # Вспомогательный метод для создания графа
     def _create_graph_by_attr(self, friends: list[Friend], attribute: str) -> nx.Graph:
+        # Проверяем, что аттрибут поддерживается
         if attribute not in ['byear', 'city', 'sex', 'universities']:
             raise ValueError(f'Неверный признак: {attribute}')
         
-        # создаем узлы графа
+        # Создаем узлы графа
         graph = nx.Graph()
         for f in friends:
             f_data = f.get_data()
@@ -24,7 +29,7 @@ class Graph:
                 continue
             graph.add_node(f_name, attr=f_attr)
         
-        # создаем ребра графа
+        # Создаем ребра графа
         nodes = graph.nodes(data='attr')
         for i, (name, attr) in enumerate(nodes):
             for j, (other_name, other_attr) in enumerate(nodes):
@@ -35,10 +40,12 @@ class Graph:
         
         return graph
 
+    # Метод для отрисовки графа
     def plot_graph(self, friends: list[Friend], attribute: str) -> go.Figure:
         graph = self._create_graph_by_attr(friends=friends, attribute=attribute)
         pos = nx.spring_layout(graph)
 
+        # Формируем ребра графа
         edge_x, edge_y = [], []
         for edge0, edge1 in graph.edges():
             x0, y0 = pos[edge0]
@@ -46,6 +53,7 @@ class Graph:
             edge_x.extend([x0, x1])
             edge_y.extend([y0, y1])
 
+        # Формируем узла графа
         node_x, node_y = [], []
         node_name = []
         for node in graph.nodes():
@@ -54,6 +62,7 @@ class Graph:
             node_y.append(y)
             node_name.append(node)
         
+        # Добавляем отображение ребер и узлов
         fig = go.Figure()
 
         fig.add_trace(go.Scatter(
@@ -79,6 +88,7 @@ class Graph:
             }
         ))
 
+        # Добавляем название графа
         fig.update_layout(
             title='vk-social-graph',
             showlegend=False,
@@ -88,5 +98,6 @@ class Graph:
             title_y=0.95
         )
         
+        # Рисуем граф
         fig.show()
     
