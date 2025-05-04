@@ -8,8 +8,6 @@ class Friend:
         self.byear: int | None = None
         self.sex: str | None = None
         self.universities: list[int] = []
-
-        self.stub = 'Отсутствует'
     
     @property
     def name(self):
@@ -27,14 +25,16 @@ class Friend:
 
         bdate = data.get('bdate')
         if bdate is not None:
-            self.byear = int(bdate.split('.')[-1])
+            bdate_split = bdate.split('.')
+            if len(bdate_split) == 3:
+                self.byear = int(bdate_split[-1])
 
-        all_sex = {0: self.stub, 1: 'Женский', 2: 'Мужской'}
+        all_sex = {0: None, 1: 'Женский', 2: 'Мужской'}
         sex = data.get('sex', 0)
         self.sex = all_sex.get(sex)
 
-        self.city = data.get('city', self.stub)
-        if self.city != self.stub:
+        self.city = data.get('city')
+        if self.city is not None:
             self.city = self.city.get('title')
 
         universities_data = data.get('universities', [])
@@ -49,5 +49,6 @@ class Friend:
             'last_name': self.last_name,
             'byear': self.byear,
             'sex': self.sex,
+            'city': self.city,
             'universities': self.universities,
         }
