@@ -4,12 +4,12 @@ import plotly.graph_objects as go
 from friend import Friend
 
 class Graph:
-    def is_attr_connected(self, attr1: str | int | list, attr2: str | int | list) -> bool:
+    def _is_attr_connected(self, attr1: str | int | list, attr2: str | int | list) -> bool:
         if not (isinstance(attr1, list) and isinstance(attr2, list)):
             return attr1 == attr2
         return bool(set(attr1) & set(attr2))
 
-    def create_graph_by_attr(self, friends: list[Friend], attribute: str):
+    def _create_graph_by_attr(self, friends: list[Friend], attribute: str) -> nx.Graph:
         if attribute not in ['byear', 'city', 'sex', 'universities']:
             raise ValueError(f'Неверный признак: {attribute}')
         
@@ -30,12 +30,13 @@ class Graph:
             for j, (other_name, other_attr) in enumerate(nodes):
                 if i == j:
                     continue
-                if self.is_attr_connected(attr, other_attr):
+                if self._is_attr_connected(attr, other_attr):
                     graph.add_edge(name, other_name)
         
         return graph
 
-    def plot_graph(self, graph: nx.Graph):
+    def plot_graph(self, friends: list[Friend], attribute: str) -> go.Figure:
+        graph = self._create_graph_by_attr(friends=friends, attribute=attribute)
         pos = nx.spring_layout(graph)
 
         edge_x, edge_y = [], []
@@ -86,5 +87,6 @@ class Graph:
             title_x=0.5,
             title_y=0.95
         )
-        return fig
+        
+        fig.show()
     
