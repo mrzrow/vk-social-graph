@@ -30,7 +30,7 @@ class Graph:
             for j, (other_name, other_attr) in enumerate(nodes):
                 if i == j:
                     continue
-                if attr == other_attr:
+                if self.is_attr_connected(attr, other_attr):
                     graph.add_edge(name, other_name)
         
         return graph
