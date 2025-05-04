@@ -1,10 +1,9 @@
 import os
-import json
 from typing import Any
 
 import vk_api
 import networkx as nx
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 from dotenv import load_dotenv
 
 from friend import Friend
@@ -44,7 +43,7 @@ class Api:
     
     def create_graph_by_attr(self, friends: list[Friend], attribute: str):
         if attribute not in ['byear', 'city', 'sex', 'universities']:
-            return ValueError(f'Неверный признак: {attribute}')
+            raise ValueError(f'Неверный признак: {attribute}')
         
         # создаем узлы графа
         graph = nx.Graph()
@@ -68,11 +67,65 @@ class Api:
         
         return graph
 
+    def plot_graph(self, raph: nx.Graph):
+        pos = nx.spring_layout(graph)
+
+        edge_x, edge_y = [], []
+        for edge0, edge1 in graph.edges():
+            x0, y0 = pos[edge0]
+            x1, y1 = pos[edge1]
+            edge_x.extend([x0, x1])
+            edge_y.extend([y0, y1])
+
+        node_x, node_y = [], []
+        node_name = []
+        for node in graph.nodes():
+            x, y = pos[node]
+            node_x.append(x)
+            node_y.append(y)
+            node_name.append(node)
+        
+        fig = go.Figure()
+
+        fig.add_trace(go.Scatter(
+            x=edge_x, y=edge_y,
+            line={'width': 0.5, 'color': 'gray'},
+            hoverinfo=None,
+            mode='lines'
+        ))
+
+        fig.add_trace(go.Scatter(
+            x=node_x, y=node_y,
+            mode='markers',
+            hoverinfo='text',
+            text=node_name,
+            marker={
+                'symbol': 'circle',
+                'size': 10,
+                'color': 'blue',
+                'line': {
+                    'width': 2,
+                    'color': 'black',
+                },
+            }
+        ))
+
+        fig.update_layout(
+            title='vk-social-graph',
+            showlegend=False,
+            height=800,
+            width=800,
+            title_x=0.5,
+            title_y=0.95
+        )
+        return fig
+
 
 if __name__ == '__main__':
     load_dotenv()
     token = os.environ.get('ACCESS-TOKEN')
     api = Api(token=token)
     friends = api.get_friends()
-    for f in friends:
-        print(f.get_data())
+    graph = api.create_graph_by_attr(friends, 'byear')
+    fig = api.plot_graph(graph)
+    fig.show()
