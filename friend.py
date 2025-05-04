@@ -5,7 +5,8 @@ class Friend:
         self.id: int | None = None
         self.first_name: str | None = None
         self.last_name: str | None = None
-        self.sex: int | None = None
+        self.byear: int | None = None
+        self.sex: str | None = None
         self.universities: list[int] = []
 
         self.stub = 'Отсутствует'
@@ -18,11 +19,15 @@ class Friend:
     def is_deleted(self):
         return self.first_name == 'DELETED'
 
-    def update_data(self, data: dict[str, Any]) -> None:
+    def set_data(self, data: dict[str, Any]) -> None:
         self.id = data.get('id')
 
         self.first_name = data.get('first_name')
         self.last_name = data.get('last_name')
+
+        bdate = data.get('bdate')
+        if bdate is not None:
+            self.byear = int(bdate.split('.')[-1])
 
         all_sex = {0: self.stub, 1: 'Женский', 2: 'Мужской'}
         sex = data.get('sex', 0)
@@ -42,6 +47,7 @@ class Friend:
             'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
+            'byear': self.byear,
             'sex': self.sex,
             'universities': self.universities,
         }
