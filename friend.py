@@ -1,5 +1,6 @@
 from typing import Any
 
+
 class Friend:
     def __init__(self):
         self.id: int | None = None
@@ -45,10 +46,9 @@ class Friend:
     def get_data(self) -> dict[str, Any]:
         return {
             'id': self.id,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
+            'name': self.name,
             'byear': self.byear,
-            'sex': self.sex,
             'city': self.city,
+            'sex': self.sex,
             'universities': self.universities,
         }
