@@ -1,8 +1,7 @@
+import vk_api
 from typing import Any
 
-import vk_api
-
-from friend import Friend
+from .friend import Friend
 
 
 class Api:

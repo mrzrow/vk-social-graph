@@ -1,8 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-from api import Api
-from graph import Graph
+from src import Api, Graph
 
 
 if __name__ == '__main__':

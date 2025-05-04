@@ -1,7 +1,7 @@
 import networkx as nx
 import plotly.graph_objects as go
 
-from friend import Friend
+from .friend import Friend
 
 class Graph:
     def _is_attr_connected(self, attr1: str | int | list, attr2: str | int | list) -> bool:
