@@ -4,6 +4,11 @@ import plotly.graph_objects as go
 from friend import Friend
 
 class Graph:
+    def is_attr_connected(self, attr1: str | int | list, attr2: str | int | list) -> bool:
+        if not (isinstance(attr1, list) and isinstance(attr2, list)):
+            return attr1 == attr2
+        return bool(set(attr1) & set(attr2))
+
     def create_graph_by_attr(self, friends: list[Friend], attribute: str):
         if attribute not in ['byear', 'city', 'sex', 'universities']:
             raise ValueError(f'Неверный признак: {attribute}')
