@@ -33,7 +33,7 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-После этого создайте файл `.env` и напишите в нем:
+После этого создайте файл `.env` (его шаблон есть репозитории) и напишите в нем:
 ```txt
 ACCESS-TOKEN=[ваш_токен]
 ```
